@@ -1,0 +1,18 @@
+python ../../train_autoencoder.py \
+  --name vae_flying_320x960_L2_128_01 \
+  --height 320 \
+  --width 960 \
+  --dataset_path /home/milo/datasets/sceneflow_flying_things_3d/ \
+  --dataset_name SceneFlowFlying \
+  --split sceneflow_flying \
+  --batch_size 32 \
+  --do_hflip \
+  --learning_rate 1e-3 \
+  --num_workers 6 \
+  --log_frequency 100 \
+  --fast_eval \
+  --decoder_loss_scale 2 \
+  --stereonet_k 4 \
+  --vae \
+  --vae_bottleneck 128 \
+  --num_epochs 30 \

@@ -1,0 +1,21 @@
+python ../../train.py --model_name monodepth_loss_flying_01 \
+  --network MGC-Net \
+  --split sceneflow_flying \
+  --dataset_path /home/milo/datasets/sceneflow_flying_things_3d \
+  --dataset SceneFlowFlying \
+  --height 320 \
+  --width 1216 \
+  --radius_disp 2 \
+  --batch_size 8 \
+  --learning_rate 1e-4 \
+  --num_workers 8 \
+  --scheduler_step_size 10000 \
+  --num_epochs 2000 \
+  --log_frequency 100 \
+  --loss_type monodepth \
+  --save_freq 5 \
+  --load_weights_folder ../../resources/pretrained_models/mgcnet/flying_320x1216_monodepth/weights_6/ \
+  --leftright_consistency \
+  --smoothness_weight 1e-3 \
+  --consistency_weight 1e-3 \
+  --scales 0 \

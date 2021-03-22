@@ -1,0 +1,1 @@
+frames_cleanpass/TRAIN/C/0563/left/0012.png frames_cleanpass/TRAIN/C/0563/right/0012.png disparity/TRAIN/C/0563/left/0012.pfm disparity/TRAIN/C/0563/right/0012.pfm

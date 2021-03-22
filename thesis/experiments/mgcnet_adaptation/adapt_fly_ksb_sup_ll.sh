@@ -1,0 +1,20 @@
+python ../../adaptation_main.py --model_name adapt_fly_ksb_sup_ll_01 \
+  --split kitti_stereo_full \
+  --dataset_path /home/milo/datasets/ \
+  --dataset KittiStereoFullDataset \
+  --height 320 \
+  --width 1216 \
+  --radius_disp 2 \
+  --batch_size 1 \
+  --num_workers 2 \
+  --scheduler_step_size 100000 \
+  --loss_type madnet \
+  --load_weights_folder ../../resources/pretrained_models/flying_320x1216_supervised_nll/weights_122/ \
+  --learning_rate 1e-5 \
+  --no_shuffle \
+  --training_eval \
+  --scales 0 \
+  --predict_variance \
+  --distribution laplacian \
+  --clip_grad_norm \
+  --log_frequency 10 \

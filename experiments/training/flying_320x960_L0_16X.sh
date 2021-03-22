@@ -1,0 +1,18 @@
+python ../../train.py --model_name stereonet_flying_320x960_L0_16X_01 \
+  --split sceneflow_flying \
+  --dataset_path /home/milo/datasets/sceneflow_flying_things_3d \
+  --dataset_name SceneFlowFlying \
+  --height 320 \
+  --width 960 \
+  --stereonet_input_scale 0 \
+  --batch_size 8 \
+  --learning_rate 1e-5 \
+  --num_workers 8 \
+  --scheduler_step_size 5000 \
+  --num_epochs 100 \
+  --log_frequency 200 \
+  --save_freq 1 \
+  --do_hflip \
+  --stereonet_k 4 \
+  --fast_eval \
+  --load_weights_folder /home/milo/rrg/src/perception/adaptive_stereo/resources/pretrained_models/stereo_net/flying_384x960_16X/ \

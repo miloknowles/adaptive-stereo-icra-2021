@@ -1,0 +1,13 @@
+python ../../evaluate_variance.py \
+  --mode $1 \
+  --network MGC-Net \
+  --dataset_path /home/milo/datasets/kitti_stereo_2015 \
+  --dataset KittiStereo2015 \
+  --split $2 \
+  --height 320 \
+  --width 1216 \
+  --radius_disp 2 \
+  --load_weights_folder $3 \
+  --predict_variance \
+  --variance_mode $4 \
+  --scales 0 \

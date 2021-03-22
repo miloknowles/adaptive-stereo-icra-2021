@@ -1,0 +1,13 @@
+python ../../evaluate_model.py \
+  --mode $1 \
+  --network $2 \
+  --dataset_path /home/milo/datasets/sceneflow_driving \
+  --dataset SceneFlowDriving \
+  --split sceneflow_driving \
+  --subsplit val \
+  --height 320 \
+  --width 1216 \
+  --radius_disp 2 \
+  --load_weights_folder $3 \
+  --do_vertical_flip \
+  --scales 0 \

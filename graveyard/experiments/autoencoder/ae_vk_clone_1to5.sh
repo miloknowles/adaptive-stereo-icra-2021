@@ -1,0 +1,16 @@
+python ../../train_autoencoder.py \
+  --name ae_vk_clone_352x960_1to5_01 \
+  --height 352 \
+  --width 960 \
+  --dataset_path /home/milo/datasets/virtual_kitti/ \
+  --dataset_name VirtualKitti \
+  --split virtual_kitti_clone_aug \
+  --batch_size 32 \
+  --do_hflip \
+  --learning_rate 1e-3 \
+  --num_workers 6 \
+  --log_frequency 100 \
+  --decoder_loss_scale 1 \
+  --stereonet_k 4 \
+  --encoder_type ConvolutionalEncoder \
+  --num_epochs 20 \

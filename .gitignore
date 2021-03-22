@@ -1,0 +1,7 @@
+.vscode
+*.pyc
+*.png
+*.npy
+*.pdf
+output/
+resources/pretrained_models/

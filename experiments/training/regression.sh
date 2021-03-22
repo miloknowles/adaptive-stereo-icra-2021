@@ -1,0 +1,17 @@
+python ../../train.py --model_name stereonet_regression \
+  --split sceneflow_flying_100 \
+  --dataset_path /home/milo/datasets/sceneflow_flying_things_3d \
+  --dataset_name SceneFlowFlying \
+  --height 320 \
+  --width 960 \
+  --batch_size 2 \
+  --learning_rate 1e-4 \
+  --num_workers 2 \
+  --scheduler_step_size 5000 \
+  --num_epochs 100 \
+  --log_frequency 100 \
+  --save_freq 1 \
+  --do_hflip \
+  --stereonet_k 3 \
+  --stereonet_input_scale 1 \
+  --fast_eval \

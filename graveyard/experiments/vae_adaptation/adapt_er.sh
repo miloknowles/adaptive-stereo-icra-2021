@@ -1,0 +1,28 @@
+python ../../adapt_vae.py --name $1 \
+  --split $2 \
+  --dataset_path $3 \
+  --dataset_name $4 \
+  --height 320 \
+  --width 960 \
+  --batch_size 1 \
+  --log_dir /home/milo/training_logs \
+  --learning_rate 5e-5 \
+  --num_workers 1 \
+  --scheduler_step_size 100000 \
+  --num_epochs 100 \
+  --log_frequency 20 \
+  --load_weights_folder $8 \
+  --stereonet_k 4 \
+  --clip_grad_norm \
+  --eval_hz 1000 \
+  --num_steps 4000 \
+  --ovs_validate_hz 100000 \
+  --adapt_mode ER \
+  --train_dataset_path $5 \
+  --train_dataset_name $6 \
+  --train_split $7 \
+  --skip_initial_eval \
+  --er_loss_weight 0.05 \
+  --val_improve_retries 2 \
+  --vae_weights_folder ${9}
+  --vae_bottleneck 128 \
