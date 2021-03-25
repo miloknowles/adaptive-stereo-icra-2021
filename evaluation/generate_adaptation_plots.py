@@ -15,6 +15,7 @@ from utils.path_utils import *
 matplotlib.use('Agg')
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
+plt.rcParams['pdf.fonttype'] = 42 # Solve Type 3 font problem.
 
 
 def lineplots_adaptation(df, experiment_name, show_legend=False):

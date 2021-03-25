@@ -25,6 +25,7 @@ matplotlib.use('Agg')
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 matplotlib.rcParams['font.size'] = 20
+plt.rcParams['pdf.fonttype'] = 42 # Solve Type 3 font problem.
 
 
 def process_batch(feature_net, stereo_net, left, right, opt):
@@ -72,7 +73,7 @@ def save_cost_volumes(loader, output_folder, opt):
       print("Finished {}/{} images".format(i+1, opt.num_images))
 
 
-def visualize_cost_volumes(output_folder, argmin_or_argmax, line_color, legend, opt, ylim=None):
+def visualize_cost_volumes(output_folder, argmin_or_argmax, line_color, legend, opt, ylim=None, ylabel=True):
   plt.clf()
   plt.figure(figsize=(4, 3))
   matplotlib.rcParams['font.size'] = 16
@@ -100,7 +101,9 @@ def visualize_cost_volumes(output_folder, argmin_or_argmax, line_color, legend, 
     plt.plot(np.arange(len(cost_volume_slice)), cost_volume_slice, color=line_color, linestyle="-")
     plt.xticks(np.arange(0, len(cost_volume_slice), step=2))
     plt.xlabel("disparity")
-    plt.ylabel("feature similarity score")
+
+    if ylabel:
+      plt.ylabel("feature similarity score $\mathcal{C}(u, v)$")
 
     if ylim is not None:
       plt.ylim(ylim)
@@ -150,7 +153,7 @@ if __name__ == "__main__":
     visualize_cost_volumes(path_to_output(reldir="cost_volume_analysis/train"), torch.argmax, "tab:blue", False, opt, ylim=[-22, 12])
 
     print("Visualizing novel cost volumes")
-    visualize_cost_volumes(path_to_output(reldir="cost_volume_analysis/novel"), torch.argmin, "tab:red", True, opt, ylim=[-22, 12])
+    visualize_cost_volumes(path_to_output(reldir="cost_volume_analysis/novel"), torch.argmin, "tab:red", True, opt, ylim=[-22, 12], ylabel=False)
 
   else:
     raise NotImplementedError()

@@ -26,6 +26,8 @@ matplotlib.use('Agg')
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 matplotlib.rcParams['font.size'] = 20
+plt.rcParams['pdf.fonttype'] = 42 # Solve Type 3 font problem.
+
 
 torch.manual_seed(123)
 random.seed(123)
