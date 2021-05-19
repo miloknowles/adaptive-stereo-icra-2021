@@ -93,10 +93,13 @@ def main(opt):
       pred_disp_l_0 = visualize_disp_cv(pred_disp_l_0, cmap=plt.get_cmap("inferno"), vmin=0, vmax=0.6*192)
       pred_disp_l_k = visualize_disp_cv(pred_disp_l_k, cmap=plt.get_cmap("inferno"), vmin=0, vmax=0.6*192)
 
+      err = torch.abs(gt_disp_l_0 - pred_disp_l_0)
+
       cv.imshow("pred_disp_l/0", pred_disp_l_0)
       cv.imshow("pred_disp_l/{}".format(opt.stereonet_k), pred_disp_l_k)
       cv.imshow("color_l/0", color_l_0)
       cv.imshow("gt_disp_l/0", gt_disp_l_0)
+      cv.imshow("l1_error", visualize_disp_cv(err, cmap=plt.get_cmap("hot")))
       cv.waitKey(0)
 
   elif opt.mode == "video":
