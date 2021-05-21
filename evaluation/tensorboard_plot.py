@@ -15,20 +15,6 @@ matplotlib.rcParams['font.family'] = 'STIXGeneral'
 plt.rcParams['pdf.fonttype'] = 42 # Solve Type 3 font problem.
 
 from tensorflow.python.summary.summary_iterator import summary_iterator
-
-
-def get_tag_from_logfile(path_to_logfile, tag):
-  """
-  Retrieves a time-ordered sequences of scalars with the specified tag (e.g "loss").
-  """
-  output = []
-  for e in summary_iterator(path_to_logfile):
-    for v in e.summary.value:
-      if v.tag == tag:
-        output.append(v.simple_value)
-  return output
-
-
 from tensorflow.core.util import event_pb2
 from tensorflow.python.lib.io import tf_record
 
@@ -53,24 +39,26 @@ def get_tag_from_logfiles(summary_dir, tag):
   return steps, output
 
 
-def coupled_list_sort(list1, list2, sort_by=0):
-  # Sort by the first list.
-  if sort_by == 0:
-    zipped_lists = sorted(zip(list1, list2))
-    return [e for e, _ in zipped_lists], [e for _, e in zipped_lists]
-  # Sort by the second list.
-  else:
-    zipped_lists = sorted(zip(list2, list1))
-    return [e for _, e in zipped_lists], [e for e, _ in zipped_lists]
+def joint_list_sort(sort_by_list, other_list):
+  """
+  - Sorts two lists based on the values in the sort_by_list.
+  - The sorted lists are returned in the same order as the args.
+  - https://www.kite.com/python/answers/how-to-sort-a-list-based-on-another-list-in-python
+  """
+  zipped_lists = sorted(zip(sort_by_list, other_list))
+  return [e for e, _ in zipped_lists], [e for _, e in zipped_lists]
 
 
 def plot_series_epe(path_to_adapt, path_to_baseline, steps=1000):
+  """
+  Plots the progression of EPE (end-point-error) during adaptation experiments.
+  """
   for label in ("adaptation", "baseline"):
     print("Processing label {}".format(label))
     print("Getting all data with tag {} from logfiles".format("EPE"))
     step_values, epe_values = get_tag_from_logfiles(
         path_to_adapt if label == "adaptation" else path_to_baseline, "EPE")
-    step_values, epe_values = coupled_list_sort(step_values, epe_values, sort_by=0)
+    step_values, epe_values = joint_list_sort(step_values, epe_values)
     print("Found {} values".format(len(epe_values)))
     print("Done")
 
@@ -97,6 +85,6 @@ def plot_series_epe(path_to_adapt, path_to_baseline, steps=1000):
 
 
 if __name__ == "__main__":
-  plot_series_epe("/home/milo/training_logs/adapt_flying_to_vk01_nonstop/adapt/",
-                  "/home/milo/training_logs/adapt_flying_to_vk01_nonstop/adapt/",
+  plot_series_epe("/home/milo/training_logs/plateau_example_adapt/adapt/",
+                  "/home/milo/training_logs/plateau_example_baseline/adapt/",
                   steps=1000)
