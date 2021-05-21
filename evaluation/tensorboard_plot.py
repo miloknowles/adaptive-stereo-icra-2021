@@ -13,6 +13,8 @@ from utils.ema import online_ema
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 plt.rcParams['pdf.fonttype'] = 42 # Solve Type 3 font problem.
+matplotlib.rcParams['font.size'] = 18
+matplotlib.rcParams['lines.markersize'] = 12
 
 from tensorflow.python.summary.summary_iterator import summary_iterator
 from tensorflow.core.util import event_pb2
@@ -30,6 +32,7 @@ def get_tag_from_logfiles(summary_dir, tag):
 
   for filename in os.listdir(summary_dir):
     path = os.path.join(summary_dir, filename)
+    # print(path)
     for event in my_summary_iterator(path):
       for value in event.summary.value:
         if value.tag == tag:
@@ -69,7 +72,7 @@ def plot_series_epe(path_to_adapt, path_to_baseline, steps=1000):
     # Apply EMA smoothing.
     s_last = epe_values[0]
     for i in range(len(epe_values)):
-      s_last = online_ema(s_last, epe_values[i], weight=0.7)
+      s_last = online_ema(s_last, epe_values[i], weight=0.8)
       epe_values[i] = s_last
 
     assert(len(step_values) == len(epe_values))
@@ -79,6 +82,7 @@ def plot_series_epe(path_to_adapt, path_to_baseline, steps=1000):
 
   plt.xlabel("step")
   plt.ylabel("end-point-error (EPE)")
+  plt.xlim(0, 1000)
   plt.legend(loc="upper right", fontsize="small")
   plt.grid(True, which='both')
   plt.show()
