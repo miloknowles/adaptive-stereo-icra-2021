@@ -1,6 +1,0 @@
-outputs/
-*.pyc
-__pycache__
-*.npy
-*.npz
-*.pt
