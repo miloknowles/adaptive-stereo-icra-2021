@@ -76,8 +76,7 @@ def predict_disparity_left(feature_net, stereo_net, left, right, adapt_state, op
   # If we're not doing updates for the feature network, disable grad.
   with torch.set_grad_enabled(adapt_state == State.IN_PROGRESS):
     fl, fr = feature_net(left), feature_net(right)
-
-  outputs = stereo_net(left, fl, fr, "l", output_cost_volume=True)
+    outputs = stereo_net(left, fl, fr, "l", output_cost_volume=True)
 
   return outputs
 
@@ -248,7 +247,8 @@ def adapt(opt):
   for s in image_scales:
     warpers[s] = LinearWarping(opt.height // 2**s, opt.width // 2**s, torch.device("cuda"))
 
-  state_machine = StateMachine(State.IN_PROGRESS, ovs_buffer_size=opt.ovs_buffer_size)
+  initial_state = State.DONE if (opt.adapt_mode == "NONE") else State.IN_PROGRESS
+  state_machine = StateMachine(initial_state, ovs_buffer_size=opt.ovs_buffer_size)
 
   # Make a pd.DataFrame to store end-of-epoch results.
   path_to_trials_log = os.path.join(log_path, "trials.csv")
@@ -303,10 +303,10 @@ def adapt(opt):
         state_machine.validate(feature_net, stereo_net, warpers[opt.stereonet_input_scale], opt)
 
         # If using the NONSTOP or ER methods (no validation), adaptation never stops.
-        if opt.adapt_mode not in ("NONSTOP", "ER"):
+        # Also, if not using adaptation, then don't worry about transitions.
+        if opt.adapt_mode not in ("NONSTOP", "ER", "NONE"):
           state_machine.transition(opt)
 
-      # Train on a single image.
       t0 = time.time()
 
       for key in inputs:
@@ -325,6 +325,7 @@ def adapt(opt):
             inputs["color_l/{}".format(opt.stereonet_intput_scale)],
             inputs["color_r/{}".format(opt.stereonet_input_scale)],
             state_machine.state(), opt)
+        # with torch.set_grad_enabled(state_machine.state == State.IN_PROGRESS):
         losses = monodepth_leftright_loss(
             inputs["color_l/{}".format(opt.stereonet_input_scale)],
             inputs["color_r/{}".format(opt.stereonet_input_scale)],
@@ -335,6 +336,7 @@ def adapt(opt):
             inputs["color_l/{}".format(opt.stereonet_input_scale)],
             inputs["color_r/{}".format(opt.stereonet_input_scale)],
             state_machine.state(), opt)
+        # with torch.set_grad_enabled(state_machine.state == State.IN_PROGRESS):
         losses = monodepth_single_loss(
           inputs["color_l/{}".format(opt.stereonet_input_scale)],
             inputs["color_r/{}".format(opt.stereonet_input_scale)],
@@ -367,11 +369,12 @@ def adapt(opt):
       adapt_writer.add_scalar("fcs/raw", fcs_raw.item(), step)
       adapt_writer.add_scalar("fcs/smoothed", fcs_smoothed.item(), step)
 
+      # OOD Detection!
       image_is_novel = (fcs_smoothed.item() < opt.ood_threshold)
 
       # Add the current stereo pair to the OVS.
       did_add_to_ovs = False
-      if opt.adapt_mode not in ("NONSTOP", "ER"):
+      if opt.adapt_mode not in ("NONSTOP", "ER", "NONE"):
         if image_is_novel:
           print("[ OOD ] Novel image detected! fcs_raw={:.03f} fcs_smoothed={:.03f} threshold={:.03f}".format(
               fcs_raw, fcs_smoothed, opt.ood_threshold))
@@ -402,7 +405,14 @@ def adapt(opt):
       do_logging = (step % opt.log_frequency) == 0 and step > 0
 
       if do_logging:
-        log_scalars(adapt_writer, {}, losses, opt.batch_size / elapsed_this_batch, epoch, step)
+        # If groundtruth disparity available, compute the EPE for each image.
+        if "gt_disp_l/{}".format(opt.stereonet_input_scale) in inputs:
+          metrics = {}
+          gt_disp = inputs["gt_disp_l/{}".format(opt.stereonet_input_scale)]
+          pred_disp = outputs["pred_disp_l/{}".format(opt.stereonet_input_scale)]
+          metrics["EPE"] = torch.abs(gt_disp - pred_disp)[gt_disp > 0].mean()
+
+        log_scalars(adapt_writer, metrics, losses, opt.batch_size / elapsed_this_batch, epoch, step)
         log_images(adapt_writer, inputs, outputs, step)
 
       step += 1
