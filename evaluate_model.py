@@ -87,13 +87,12 @@ def main(opt):
 
       pred_disp_l_0 = torch.load(get_save_filename(save_folder, "pred_disp_l/0", i)).contiguous()
       pred_disp_l_k = torch.load(get_save_filename(save_folder, "pred_disp_l/{}".format(opt.stereonet_k), i)).contiguous()
+      err = torch.abs(inputs["gt_disp_l/0"].cpu() - pred_disp_l_0.cpu())
 
       EPE = torch.abs(pred_disp_l_0.cpu() - inputs["gt_disp_l/0"].cpu())[inputs["gt_disp_l/0"].cpu() > 0].mean()
       print("EPE:", EPE)
       pred_disp_l_0 = visualize_disp_cv(pred_disp_l_0, cmap=plt.get_cmap("inferno"), vmin=0, vmax=0.6*192)
       pred_disp_l_k = visualize_disp_cv(pred_disp_l_k, cmap=plt.get_cmap("inferno"), vmin=0, vmax=0.6*192)
-
-      err = torch.abs(gt_disp_l_0 - pred_disp_l_0)
 
       cv.imshow("pred_disp_l/0", pred_disp_l_0)
       cv.imshow("pred_disp_l/{}".format(opt.stereonet_k), pred_disp_l_k)

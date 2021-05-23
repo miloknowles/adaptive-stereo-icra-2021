@@ -82,13 +82,40 @@ def plot_series_epe(path_to_adapt, path_to_baseline, steps=1000):
 
   plt.xlabel("step")
   plt.ylabel("end-point-error (EPE)")
-  plt.xlim(0, 1000)
+  plt.xlim(0, steps)
+  plt.legend(loc="upper right", fontsize="small")
+  plt.grid(True, which='both')
+  plt.show()
+
+
+def plot_series_fcs(path_to_adapt, nsteps=1000):
+  steps, values = get_tag_from_logfiles(path_to_adapt, "fcs/raw")
+  steps, values = joint_list_sort(steps, values)
+  print("Found {} values".format(len(steps)))
+  print("Done")
+
+  # Truncate to a limited number of steps.
+  steps = steps[:min(nsteps, len(steps))]
+  values = values[:min(nsteps, len(values))]
+
+  # Apply EMA smoothing.
+  s_last = values[0]
+  for i in range(len(values)):
+    s_last = online_ema(s_last, values[i], weight=0.95)
+    values[i] = s_last
+
+  plt.plot(steps, values, label="adaptation", color="tab:red")
+  plt.xlabel("step")
+  plt.ylabel("feature contrast score ($\mathcal{S}_{I}$)")
+  plt.xlim(0, nsteps)
   plt.legend(loc="upper right", fontsize="small")
   plt.grid(True, which='both')
   plt.show()
 
 
 if __name__ == "__main__":
-  plot_series_epe("/home/milo/training_logs/plateau_example_adapt/adapt/",
-                  "/home/milo/training_logs/plateau_example_baseline/adapt/",
-                  steps=1000)
+  # plot_series_epe("/home/milo/training_logs/plateau_example_adapt/adapt/",
+  #                 "/home/milo/training_logs/plateau_example_baseline/adapt/",
+  #                 steps=1000)
+
+  plot_series_fcs("/home/milo/training_logs/plateau_example_adapt/adapt/", nsteps=1000)
