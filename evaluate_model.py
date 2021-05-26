@@ -87,6 +87,7 @@ def main(opt):
 
       pred_disp_l_0 = torch.load(get_save_filename(save_folder, "pred_disp_l/0", i)).contiguous()
       pred_disp_l_k = torch.load(get_save_filename(save_folder, "pred_disp_l/{}".format(opt.stereonet_k), i)).contiguous()
+      err = torch.abs(inputs["gt_disp_l/0"].cpu() - pred_disp_l_0.cpu())
 
       EPE = torch.abs(pred_disp_l_0.cpu() - inputs["gt_disp_l/0"].cpu())[inputs["gt_disp_l/0"].cpu() > 0].mean()
       print("EPE:", EPE)
@@ -97,6 +98,7 @@ def main(opt):
       cv.imshow("pred_disp_l/{}".format(opt.stereonet_k), pred_disp_l_k)
       cv.imshow("color_l/0", color_l_0)
       cv.imshow("gt_disp_l/0", gt_disp_l_0)
+      cv.imshow("l1_error", visualize_disp_cv(err, cmap=plt.get_cmap("hot")))
       cv.waitKey(0)
 
   elif opt.mode == "video":

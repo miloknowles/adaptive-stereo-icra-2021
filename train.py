@@ -42,7 +42,11 @@ def log_scalars(writer, metrics, losses, examples_per_sec, epoch, step):
     print("TIMING  // examples/sec={:.3f}".format(examples_per_sec))
     if len(metrics) > 0:
       print("METRICS // EPE={:.3f} | >2px={:.3f} | >3px={:.3f} | >4px={:.3f} | >5px={:.3f}".format(
-        metrics["EPE"], metrics["D1_all_2px"], metrics["D1_all_3px"], metrics["D1_all_4px"], metrics["D1_all_5px"]))
+        metrics["EPE"] if "EPE" in metrics else -1,
+        metrics["D1_all_2px"] if "D1_all_2px" in metrics else -1,
+        metrics["D1_all_3px"] if "D1_all_3px" in metrics else -1,
+        metrics["D1_all_4px"] if "D1_all_4px" in metrics else -1,
+        metrics["D1_all_5px"] if "D1_all_5px" in metrics else -1))
 
     if len(losses) > 0:
       loss_str = "LOSS    // "
@@ -289,7 +293,7 @@ class TrainOptions(object):
     self.parser.add_argument("--ovs_buffer_size", type=int, default=10, help="Size of the online validation set (OVS)")
     self.parser.add_argument("--skip_initial_eval", action="store_true", help="Skip evaluation the pre-adaptation model")
     self.parser.add_argument("--ovs_validate_hz", type=int, default=100, help="How often to test the validation buffer")
-    self.parser.add_argument("--adapt_mode", choices=["NONSTOP", "VS", "ER", "VS+ER"], help="Adaptation method")
+    self.parser.add_argument("--adapt_mode", choices=["NONSTOP", "VS", "ER", "VS+ER", "NONE"], help="Adaptation method")
     self.parser.add_argument("--val_improve_retries", type=int, default=1, help="Stop adaptation if loss hasn't improved after this many re-validations")
     self.parser.add_argument("--eval_hz", type=int, default=1000, help="Evaluate after this many steps. 0 means at the end of each epoch.")
     self.parser.add_argument("--er_loss_weight", type=float, default=0.05, help="Weight for the experience replay loss during adaptation.")
