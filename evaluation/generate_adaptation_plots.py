@@ -116,6 +116,53 @@ def barcharts_adaptation(df, experiment_name, show_left_y_axis=False,
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
   print("Saved", fig_name)
 
+
+def barcharts_separate_novel_train(df, en, show_left_y_axis=False):
+  """
+  Show the EPE after adaptation is finished in the novel domain.
+  """
+  matplotlib.rcParams['font.size'] = 18
+
+  # Need to add the 'None' Method (no adaptation).
+  df_concat = pd.DataFrame([["None", 4000, "TRAIN", df.iloc[0]["EPE"], df.iloc[0]["FCS"], 0],
+                            ["None", 4000, "ADAPT", df.iloc[1]["EPE"], df.iloc[0]["FCS"], 0]],
+                            columns=["Method", "Step", "Domain", "EPE", "FCS", "GradientUpdates"])
+  df = df.append(df_concat)
+  df = df[df["Step"] == 4000]
+  df = df.replace({"MAD-FULL": "MAD"})
+  df = df.replace({"TRAIN": "Train", "ADAPT": "Novel"})
+
+  palette = {"Train": "tab:blue", "Novel": "tab:red"}
+
+  for domain_name in ("Train", "Novel"):
+    plt.clf()
+    plt.figure(figsize=(4, 4))
+
+    g = sns.catplot(
+        data=df[df["Domain"] == domain_name],
+        kind="bar", order=["None", "MAD", "VS", "ER", "VS + ER"],
+        x="Method", y="EPE", hue="Domain", # color="tab:red" if domain_name == "Novel" else "tab:blue",
+        legend=False, ci=None, palette=palette, alpha=0.8, height=5, aspect=1
+    )
+
+    ax = plt.gca()
+
+    g.set_axis_labels("", "end-point-error (EPE)" if show_left_y_axis else "")
+    ax.grid(b=True, axis="y")
+
+    if domain_name == "Novel":
+      ax.set_ylim([0, 17])
+    else:
+      ax.set_ylim([0, 10])
+
+    # NOTE(milo): Saving for presentation with .png
+    fig_name = "{}_{}.png".format(en, domain_name)
+    fig_path = path_to_output(reldir="barcharts_separate")
+    os.makedirs(fig_path, exist_ok=True)
+    plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
+    print("Saved", fig_name)
+
+
 if __name__ == "__main__":
   experiment_names = [
     "clone_to_campus",
@@ -129,16 +176,22 @@ if __name__ == "__main__":
     "flying_to_vk20"
   ]
 
+  # # Make barchart to summarize pre and post-adaptation EPE.
+  # for en in experiment_names:
+  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
+  #   barcharts_adaptation(df, en, show_legend=(en == "flying_to_road"),
+  #                        show_left_y_axis=(en == "flying_to_campus"),
+  #                        show_right_y_axis=(en == "flying_to_road"))
+
+  # # Make line plots to show adaptation progress.
+  # for en in experiment_names:
+  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
+  #   lineplots_adaptation(df, en, show_legend=(en == "flying_to_vk01"))
+
   # Make barchart to summarize pre and post-adaptation EPE.
   for en in experiment_names:
     output_folder = path_to_output(reldir="adapt_results/{}".format(en))
     df = pd.read_csv(os.path.join(output_folder, "results.csv"))
-    barcharts_adaptation(df, en, show_legend=(en == "flying_to_road"),
-                         show_left_y_axis=(en == "flying_to_campus"),
-                         show_right_y_axis=(en == "flying_to_road"))
-
-  # Make line plots to show adaptation progress.
-  for en in experiment_names:
-    output_folder = path_to_output(reldir="adapt_results/{}".format(en))
-    df = pd.read_csv(os.path.join(output_folder, "results.csv"))
-    lineplots_adaptation(df, en, show_legend=(en == "flying_to_vk01"))
+    barcharts_separate_novel_train(df, en, show_left_y_axis=(en == "flying_to_vk01"))
