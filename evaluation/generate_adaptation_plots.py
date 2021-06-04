@@ -31,8 +31,9 @@ def lineplots_adaptation(df, experiment_name, show_legend=False):
   df = df.append(df_concat)
   df = df[df["Method"].isin(["MAD-FULL", "VS + ER"])]
   df = df.replace({"TRAIN": "Train", "ADAPT": "Novel"})
+  df = df.replace({"MAD-FULL": "MAD"})
 
-  palette = {"MAD-FULL": "tab:blue", "VS + ER": "tab:red"}
+  palette = {"MAD": "tab:blue", "VS + ER": "tab:red"}
   ax = sns.lineplot(x="Step", y="EPE", hue="Method", style="Domain", data=df,
                     legend="full" if show_legend else False,
                     palette=palette, markers=True)
@@ -56,6 +57,57 @@ def lineplots_adaptation(df, experiment_name, show_legend=False):
 
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
   print("Saved", fig_name)
+
+
+def lineplots_separate_novel_train(df, en, show_legend=False):
+  matplotlib.rcParams['font.size'] = 18
+  matplotlib.rcParams['lines.markersize'] = 12
+
+  df_concat = pd.DataFrame([["VS + ER", 0, "TRAIN", df.iloc[0]["EPE"], df.iloc[0]["FCS"], 0],
+                            ["VS + ER", 0, "ADAPT", df.iloc[1]["EPE"], df.iloc[0]["FCS"], 0]],
+                          columns=["Method", "Step", "Domain", "EPE", "FCS", "GradientUpdates"])
+  df = df.append(df_concat)
+  df = df[df["Method"].isin(["MAD-FULL", "VS + ER"])]
+  df = df.replace({"TRAIN": "Train", "ADAPT": "Novel"})
+  df = df.replace({"MAD-FULL": "MAD"})
+
+  palette = {"MAD": "tab:blue", "VS + ER": "tab:red"}
+
+  for domain_name in ("Train", "Novel"):
+    plt.clf()
+    plt.figure(figsize=(4, 3))
+
+    ax = sns.lineplot(x="Step", y="EPE", hue="Method", style="Domain",
+                      data=df[df["Domain"] == domain_name],
+                      legend="full" if show_legend else False,
+                      palette=palette, markers=True)
+    plt.xlabel("adaptation step")
+    plt.ylabel("end-point-error (EPE)")
+    plt.xticks([0, 1000, 2000, 3000, 4000])
+
+    if show_legend:
+      # handles, labels = ax.get_legend_handles_labels()
+
+      # Remove the legend category labels ("Method" and "Domain").
+      # handles = [handles[i] for i in (1, 2, 4, 5)]
+      # labels = [labels[i] for i in (1, 2, 4, 5)]
+      # plt.legend(handles, labels, loc="upper right", fontsize="small")
+      plt.legend(loc="lower right", fontsize="small")
+
+    ax.grid(True, which='both')
+
+    if domain_name == "Train":
+      ax.set_ylim([0, 7])
+    else:
+      ax.set_ylim([0, 6])
+
+
+    fig_name = "{}_{}.png".format(en, domain_name)
+    fig_path = path_to_output(reldir="lineplots_separate")
+    os.makedirs(fig_path, exist_ok=True)
+
+    plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
+    print("Saved", fig_name)
 
 
 def barcharts_adaptation(df, experiment_name, show_left_y_axis=False,
@@ -132,6 +184,9 @@ def barcharts_separate_novel_train(df, en, show_left_y_axis=False):
   df = df.replace({"MAD-FULL": "MAD"})
   df = df.replace({"TRAIN": "Train", "ADAPT": "Novel"})
 
+  print("Experiment: ", en)
+  print(df)
+
   palette = {"Train": "tab:blue", "Novel": "tab:red"}
 
   for domain_name in ("Train", "Novel"):
@@ -195,3 +250,9 @@ if __name__ == "__main__":
     output_folder = path_to_output(reldir="adapt_results/{}".format(en))
     df = pd.read_csv(os.path.join(output_folder, "results.csv"))
     barcharts_separate_novel_train(df, en, show_left_y_axis=(en == "flying_to_vk01"))
+
+  # Make line plots to show adaptation progress.
+  # for en in experiment_names:
+  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
+  #   lineplots_separate_novel_train(df, en, show_legend=(en == "flying_to_vk01"))
