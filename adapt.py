@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file adapt.py
-# @author Milo Knowles
-# @date 2020-07-08 20:55:48 (Wed)
-
 import os, json, time, random
 from enum import Enum
 
@@ -18,13 +12,13 @@ import pandas as pd
 
 from train import TrainOptions, evaluate, log_scalars, log_images, save_models
 
-from datasets.stereo_dataset import StereoDataset
-from utils.feature_contrast import feature_contrast_mean
-from utils.stereo_reservoir import StereoReservoir
-from utils.loss_functions import monodepth_leftright_loss, monodepth_loss, khamis_robust_loss
-from utils.ema import online_ema
-from models.stereo_net import StereoNet, FeatureExtractorNetwork
-from models.linear_warping import LinearWarping
+from adaptive_stereo.datasets.stereo_dataset import StereoDataset
+from adaptive_stereo.utils.feature_contrast import feature_contrast_mean
+from adaptive_stereo.utils.stereo_reservoir import StereoReservoir
+from adaptive_stereo.utils.loss_functions import monodepth_leftright_loss, monodepth_loss, khamis_robust_loss
+from adaptive_stereo.utils.ema import online_ema
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork
+from adaptive_stereo.models.linear_warping import LinearWarping
 
 
 # https://github.com/pytorch/pytorch/issues/15054

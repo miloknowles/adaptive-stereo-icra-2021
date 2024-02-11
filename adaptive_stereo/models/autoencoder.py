@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file autoencoder.py
-# @author Milo Knowles
-# @date 2020-10-09 14:29:16 (Fri)
-
 import torch
 import torch.nn as nn
 

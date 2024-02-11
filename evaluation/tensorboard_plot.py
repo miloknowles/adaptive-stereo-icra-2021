@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 
-from utils.path_utils import *
-from utils.ema import online_ema
+from adaptive_stereo.utils.path_utils import *
+from adaptive_stereo.utils.ema import online_ema
 
 # matplotlib.use('Agg')
 matplotlib.rcParams['mathtext.fontset'] = 'stix'

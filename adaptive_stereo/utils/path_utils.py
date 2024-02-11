@@ -1,13 +1,7 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file path_utils.py
-# @author Milo Knowles
-# @date 2020-09-22 23:01:51 (Tue)
-
 import os
 
 
-def path_to_toplevel():
+def top_folder():
   """
   Returns the absolute path to the top-level directory of this repository.
 
@@ -17,19 +11,19 @@ def path_to_toplevel():
   return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def path_to_resources(reldir=""):
+def resources_folder(reldir=""):
   """
   Returns the absolute path of the 'resources' folder.
 
   reldir (str) : If specified, this directory will be joined to the resources directory.
   """
-  return os.path.join(path_to_toplevel(), "resources", reldir)
+  return os.path.join(top_folder(), "resources", reldir)
 
 
-def path_to_output(reldir=""):
+def output_folder(reldir=""):
   """
   Returns the absolute path of the 'output' folder.
 
   reldir (str) : If specified, this directory will be joined to the resources directory.
   """
-  return os.path.join(path_to_toplevel(), "output", reldir)
+  return os.path.join(top_folder(), "output", reldir)

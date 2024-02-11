@@ -1,12 +1,6 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file evaluate_model.py
-# @author Milo Knowles
-# @date 2020-07-30 19:10:04 (Thu)
-
 import argparse
 import os, sys
-from utils.path_utils import path_to_output
+import adaptive_stereo.utils.path_utils as paths
 
 import torch
 from torch.utils.data import DataLoader
@@ -14,9 +8,9 @@ from torch.utils.data import DataLoader
 import cv2 as cv
 
 from train import evaluate
-from datasets.stereo_dataset import StereoDataset
-from models.stereo_net import StereoNet, FeatureExtractorNetwork
-from utils.visualization import *
+from adaptive_stereo.datasets.stereo_dataset import StereoDataset
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork
+from adaptive_stereo.utils.visualization import *
 
 
 def get_save_filename(save_folder, outputs_key, index):
@@ -102,7 +96,7 @@ def main(opt):
       cv.waitKey(0)
 
   elif opt.mode == "video":
-    output_folder = path_to_output("video")
+    output_folder = paths.output_folder("video")
 
     for i, inputs in enumerate(dataset):
       if opt.frames > 0 and i >= opt.frames:
@@ -120,9 +114,9 @@ def main(opt):
       cv.putText(color_l_0, "Frame {}".format(i), (50, 50), cv.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
       cv.putText(pred_disp_l_0, "EPE: {:.02f}".format(EPE), (50, 50), cv.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
 
-      cv.imwrite(path_to_output("video/left_{:05d}.png".format(i)), color_l_0)
-      cv.imwrite(path_to_output("video/gt_{:05d}.png".format(i)), gt_disp_l_0)
-      cv.imwrite(path_to_output("video/pred_{:05d}.png".format(i)), pred_disp_l_0)
+      cv.imwrite(output_folder("video/left_{:05d}.png".format(i)), color_l_0)
+      cv.imwrite(output_folder("video/gt_{:05d}.png".format(i)), gt_disp_l_0)
+      cv.imwrite(output_folder("video/pred_{:05d}.png".format(i)), pred_disp_l_0)
 
   elif opt.mode == "eval":
     pass

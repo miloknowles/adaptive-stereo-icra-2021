@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file train.py
-# @author Milo Knowles
-# @date 2020-07-08 19:08:01 (Wed)
-
 import os, json, time, argparse
 
 import git
@@ -15,12 +9,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from models.stereo_net import StereoNet, FeatureExtractorNetwork
-from models.linear_warping import LinearWarping
-from datasets.stereo_dataset import StereoDataset
-from utils.loss_functions import khamis_robust_loss_multiscale
-from utils.visualization import visualize_disp_tensorboard
-from utils.feature_contrast import feature_contrast_mean
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork
+from adaptive_stereo.datasets.stereo_dataset import StereoDataset
+from adaptive_stereo.utils.loss_functions import khamis_robust_loss_multiscale
+from adaptive_stereo.utils.visualization import visualize_disp_tensorboard
+from adaptive_stereo.utils.feature_contrast import feature_contrast_mean
 
 
 def process_batch(feature_net, stereo_net, left, right, opt, output_cost_volume=False):

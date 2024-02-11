@@ -1,13 +1,5 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file visualization.py
-# @author Milo Knowles
-# @date 2020-03-11 20:28:13 (Wed)
-
-import math
 
 import torch
-from torchvision import transforms
 
 from PIL import Image
 import numpy as np

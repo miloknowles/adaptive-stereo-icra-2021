@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file cost_volume_analysis.py
-# @author Milo Knowles
-# @date 2020-10-05 12:40:12 (Mon)
-
 import os, argparse
 
 import torch
@@ -15,10 +9,10 @@ import numpy as np
 import seaborn as sbn
 import pandas as pd
 
-from models.stereo_net import StereoNet, FeatureExtractorNetwork
-from datasets.stereo_dataset import StereoDataset
-from utils.feature_contrast import *
-from utils.path_utils import *
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork
+from adaptive_stereo.datasets.stereo_dataset import StereoDataset
+from adaptive_stereo.utils.feature_contrast import *
+import adaptive_stereo.utils.path_utils as paths
 
 import matplotlib
 matplotlib.use('Agg')
@@ -145,15 +139,15 @@ if __name__ == "__main__":
                                   load_disp_left=True, load_disp_right=False)
     novel_dataset = StereoDataset("/home/milo/datasets/virtual_kitti", "VirtualKitti", "virtual_kitti_01_adapt",
                       320, 960, "train", scales=[0, opt.stereonet_k], load_disp_left=True, load_disp_right=False)
-    save_cost_volumes(train_dataset, path_to_output(reldir="cost_volume_analysis/train"), opt)
-    save_cost_volumes(novel_dataset, path_to_output(reldir="cost_volume_analysis/novel"), opt)
+    save_cost_volumes(train_dataset, paths.output_folder(reldir="cost_volume_analysis/train"), opt)
+    save_cost_volumes(novel_dataset, paths.output_folder(reldir="cost_volume_analysis/novel"), opt)
 
   elif opt.visualize:
     print("Visualizing training cost volumes")
-    visualize_cost_volumes(path_to_output(reldir="cost_volume_analysis/train"), torch.argmax, "tab:blue", False, opt, ylim=[-22, 12])
+    visualize_cost_volumes(paths.output_folder(reldir="cost_volume_analysis/train"), torch.argmax, "tab:blue", False, opt, ylim=[-22, 12])
 
     print("Visualizing novel cost volumes")
-    visualize_cost_volumes(path_to_output(reldir="cost_volume_analysis/novel"), torch.argmin, "tab:red", True, opt, ylim=[-22, 12], ylabel=False)
+    visualize_cost_volumes(paths.output_folder(reldir="cost_volume_analysis/novel"), torch.argmin, "tab:red", True, opt, ylim=[-22, 12], ylabel=False)
 
   else:
     raise NotImplementedError()

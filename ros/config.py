@@ -29,7 +29,7 @@ class Config(object):
   MODEL_INPUT_HEIGHT = 320
   MODEL_INPUT_WIDTH = 1216
   STEREONET_K = 4
-  LOAD_WEIGHTS_FOLDER = path_to_resources(reldir="pretrained_models/stereo_net/vk_clone_368x960_16X")
+  LOAD_WEIGHTS_FOLDER = resources_folder(reldir="pretrained_models/stereo_net/vk_clone_368x960_16X")
   MAX_DEPTH = 100
 
   # Voxel-related parameters.

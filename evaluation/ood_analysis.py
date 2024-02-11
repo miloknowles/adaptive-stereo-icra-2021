@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file ood.py
-# @author Milo Knowles
-# @date 2020-07-29 13:37:06 (Wed)
-
 import os, argparse, math, random
 
 import torch
@@ -16,10 +10,10 @@ import seaborn as sbn
 import pandas as pd
 import scipy.stats as stats
 
-from models.stereo_net import StereoNet, FeatureExtractorNetwork, DisparityRegression
-from datasets.stereo_dataset import StereoDataset
-from utils.feature_contrast import *
-from utils.path_utils import *
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork, DisparityRegression
+from adaptive_stereo.datasets.stereo_dataset import StereoDataset
+from adaptive_stereo.utils.feature_contrast import *
+from adaptive_stereo.utils.path_utils import *
 
 import matplotlib
 matplotlib.use('Agg')
@@ -43,7 +37,7 @@ def process_batch(feature_net, stereo_net, left, right, opt):
 
 
 def save_data(train_loaders, novel_loaders, opt, num_train=1000, num_novel=1000,
-              output_folder=path_to_output(reldir="ood")):
+              output_folder=output_folder(reldir="ood")):
   """
   Save feature contrast scores (FCS) for training and novel images.
   """
@@ -350,31 +344,31 @@ if __name__ == "__main__":
     novel_loaders = [DataLoader(d, opt.batch_size, shuffle=True, pin_memory=True,
                                 drop_last=False, num_workers=4) for d in novel_datasets]
     save_data(train_loaders, novel_loaders, opt, num_train=1000, num_novel=1000,
-              output_folder=path_to_output(reldir="ood_{}".format(opt.environment)))
+              output_folder=output_folder(reldir="ood_{}".format(opt.environment)))
 
   if opt.histogram:
-    fcs_train_path = path_to_output(reldir="ood_{}/train_fcs.pt".format(opt.environment))
-    fcs_novel_path = path_to_output(reldir="ood_{}/novel_fcs.pt".format(opt.environment))
+    fcs_train_path = output_folder(reldir="ood_{}/train_fcs.pt".format(opt.environment))
+    fcs_novel_path = output_folder(reldir="ood_{}/novel_fcs.pt".format(opt.environment))
     fcs_train = torch.load(fcs_train_path)
     fcs_novel = torch.load(fcs_novel_path)
 
     plot_histogram(
-        fcs_train, fcs_novel, path_to_output(reldir="ood_{}".format(opt.environment)),
+        fcs_train, fcs_novel, output_folder(reldir="ood_{}".format(opt.environment)),
         opt, percentile=opt.percentile, show=False, legend=(opt.environment == "vk_to_kitti"))
 
   if opt.pr:
-    fcs_train_path = path_to_output(reldir="ood_{}/train_fcs.pt".format(opt.environment))
-    fcs_novel_path = path_to_output(reldir="ood_{}/novel_fcs.pt".format(opt.environment))
+    fcs_train_path = output_folder(reldir="ood_{}/train_fcs.pt".format(opt.environment))
+    fcs_novel_path = output_folder(reldir="ood_{}/novel_fcs.pt".format(opt.environment))
     fcs_train = torch.load(fcs_train_path)
     fcs_novel = torch.load(fcs_novel_path)
     plot_precision_recall(
-        fcs_train, fcs_novel, path_to_output(reldir="ood_{}".format(opt.environment)),\
+        fcs_train, fcs_novel, output_folder(reldir="ood_{}".format(opt.environment)),\
         opt, show=False)
 
   # NOTE: Need to run this script for each of the environments below in --pr mode first.
   # This will save the "precision.pt" and "recall.pt" data that is needed.
   if opt.pr_multiple:
-    output_folder = path_to_output(reldir="ood_multiple")
+    output_folder = output_folder(reldir="ood_multiple")
     os.makedirs(output_folder, exist_ok=True)
 
     short_names = ["vk_to_sf", "sf_to_kitti", "vk_to_kitti", "vk_weather"]
@@ -383,7 +377,7 @@ if __name__ == "__main__":
 
     pr_dict = {}
     for i, (short_name, legend_name, color) in enumerate(zip(short_names, legend_names, colors)):
-      input_folder = path_to_output(reldir="ood_{}".format(short_name))
+      input_folder = output_folder(reldir="ood_{}".format(short_name))
       precision = torch.load(os.path.join(input_folder, "precision.pt")).numpy()
       recall = torch.load(os.path.join(input_folder, "recall.pt")).numpy()
       pr_dict[legend_name] = (precision, recall, color)

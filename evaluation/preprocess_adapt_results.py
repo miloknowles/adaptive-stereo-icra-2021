@@ -1,13 +1,7 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file preprocess_adapt_results.py
-# @author Milo Knowles
-# @date 2020-10-08 16:43:08 (Thu)
-
 import os
 import pandas as pd
 
-from utils.path_utils import *
+from adaptive_stereo.utils.path_utils import *
 
 
 if __name__ == "__main__":
@@ -67,7 +61,7 @@ if __name__ == "__main__":
 
     df_plot_exp = pd.DataFrame(df_plot_exp)
 
-    output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+    output_folder = output_folder(reldir="adapt_results/{}".format(en))
     os.makedirs(output_folder, exist_ok=True)
     df_plot_exp.to_csv(os.path.join(output_folder, "results.csv"), index=False)
     print("Saved results.csv to", output_folder)

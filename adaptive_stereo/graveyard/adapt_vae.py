@@ -1,15 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file adapt_vae.py
-# @author Milo Knowles
-# @date 2020-10-13 10:34:10 (Tue)
-
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file adapt.py
-# @author Milo Knowles
-# @date 2020-07-08 20:55:48 (Wed)
-
 import os, json, time, random
 from enum import Enum
 

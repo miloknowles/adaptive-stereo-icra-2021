@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file entropy.py
-# @author Milo Knowles
-# @date 2020-10-07 10:40:04 (Wed)
-
 import torch
 
 

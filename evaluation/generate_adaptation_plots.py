@@ -1,16 +1,10 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file generate_adaptation_plots.py
-# @author Milo Knowles
-# @date 2020-10-08 16:54:36 (Thu)
-
 import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
 
-from utils.path_utils import *
+from adaptive_stereo.utils.path_utils import *
 
 matplotlib.use('Agg')
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
@@ -52,7 +46,7 @@ def lineplots_adaptation(df, experiment_name, show_legend=False):
   ax.grid(True, which='both')
 
   fig_name = experiment_name + "_lineplot.pdf"
-  fig_path = path_to_output(reldir="lineplots")
+  fig_path = output_folder(reldir="lineplots")
   os.makedirs(fig_path, exist_ok=True)
 
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
@@ -103,7 +97,7 @@ def lineplots_separate_novel_train(df, en, show_legend=False):
 
 
     fig_name = "{}_{}.png".format(en, domain_name)
-    fig_path = path_to_output(reldir="lineplots_separate")
+    fig_path = output_folder(reldir="lineplots_separate")
     os.makedirs(fig_path, exist_ok=True)
 
     plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
@@ -163,7 +157,7 @@ def barcharts_adaptation(df, experiment_name, show_left_y_axis=False,
   ax.grid(b=True, axis="y")
 
   fig_name = experiment_name + "_barchart.pdf"
-  fig_path = path_to_output(reldir="barcharts")
+  fig_path = output_folder(reldir="barcharts")
   os.makedirs(fig_path, exist_ok=True)
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
   print("Saved", fig_name)
@@ -212,7 +206,7 @@ def barcharts_separate_novel_train(df, en, show_left_y_axis=False):
 
     # NOTE(milo): Saving for presentation with .png
     fig_name = "{}_{}.png".format(en, domain_name)
-    fig_path = path_to_output(reldir="barcharts_separate")
+    fig_path = output_folder(reldir="barcharts_separate")
     os.makedirs(fig_path, exist_ok=True)
     plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
     print("Saved", fig_name)
@@ -233,7 +227,7 @@ if __name__ == "__main__":
 
   # # Make barchart to summarize pre and post-adaptation EPE.
   # for en in experiment_names:
-  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   output_folder = output_folder(reldir="adapt_results/{}".format(en))
   #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
   #   barcharts_adaptation(df, en, show_legend=(en == "flying_to_road"),
   #                        show_left_y_axis=(en == "flying_to_campus"),
@@ -241,18 +235,18 @@ if __name__ == "__main__":
 
   # # Make line plots to show adaptation progress.
   # for en in experiment_names:
-  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   output_folder = output_folder(reldir="adapt_results/{}".format(en))
   #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
   #   lineplots_adaptation(df, en, show_legend=(en == "flying_to_vk01"))
 
   # Make barchart to summarize pre and post-adaptation EPE.
   for en in experiment_names:
-    output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+    output_folder = output_folder(reldir="adapt_results/{}".format(en))
     df = pd.read_csv(os.path.join(output_folder, "results.csv"))
     barcharts_separate_novel_train(df, en, show_left_y_axis=(en == "flying_to_vk01"))
 
   # Make line plots to show adaptation progress.
   # for en in experiment_names:
-  #   output_folder = path_to_output(reldir="adapt_results/{}".format(en))
+  #   output_folder = output_folder(reldir="adapt_results/{}".format(en))
   #   df = pd.read_csv(os.path.join(output_folder, "results.csv"))
   #   lineplots_separate_novel_train(df, en, show_legend=(en == "flying_to_vk01"))

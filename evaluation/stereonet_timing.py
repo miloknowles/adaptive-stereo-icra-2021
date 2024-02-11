@@ -3,9 +3,9 @@ import time
 import torch
 import torch.optim as optim
 
-from utils.loss_functions import monodepth_loss
-from models.stereo_net import StereoNet, FeatureExtractorNetwork
-from models.linear_warping import LinearWarping
+from adaptive_stereo.utils.loss_functions import monodepth_loss
+from adaptive_stereo.models.stereo_net import StereoNet, FeatureExtractorNetwork
+from adaptive_stereo.models.linear_warping import LinearWarping
 
 
 def monodepth_single_loss(left_img, right_img, outputs, warper, scale):

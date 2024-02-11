@@ -1,13 +1,4 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file stereo_buffer.py
-# @author Milo Knowles
-# @date 2020-07-09 16:58:26 (Thu)
-
-from collections import deque
 import heapq
-
-import torch
 
 
 class StereoPriorityQueue(object):

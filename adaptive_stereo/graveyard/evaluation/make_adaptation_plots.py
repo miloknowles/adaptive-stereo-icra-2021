@@ -83,7 +83,7 @@ def lineplots_adaptation(df_plot, sequence_name, show_legend=False):
   ax.grid(True, which='both')
 
   fig_name = sequence_name.replace(" ", "_") + "_lineplot.pdf"
-  fig_path = path_to_output(reldir="lineplots")
+  fig_path = output_folder(reldir="lineplots")
   os.makedirs(fig_path, exist_ok=True)
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
   print("Saved", fig_name)
@@ -145,7 +145,7 @@ def barcharts_adaptation(df_plot, sequence_name, show_left_y_axis=False,
   ax.grid(b=True, axis="y")
 
   fig_name = sequence_name.replace(" ", "_") + "_barchart.pdf"
-  fig_path = path_to_output(reldir="barcharts")
+  fig_path = output_folder(reldir="barcharts")
   os.makedirs(fig_path, exist_ok=True)
   plt.savefig(os.path.join(fig_path, fig_name), bbox_inches="tight")
   print("Saved", fig_name)
@@ -163,7 +163,7 @@ if __name__ == "__main__":
   #   "Virtual KITTI Rain"
   # ]
 
-  # output_folder = path_to_output(reldir="adaptation_summaries")
+  # output_folder = output_folder(reldir="adaptation_summaries")
   # os.makedirs(output_folder, exist_ok=True)
 
   #===== NOTE: If running evaluation for the first time, run this code first ===

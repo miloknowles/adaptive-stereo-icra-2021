@@ -1,13 +1,14 @@
-# From: https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDrivingDatasets.en.html
+"""
+Copied from:
 
-import os
+https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDrivingDatasets.en.html
+"""
+
 import re
 import numpy as np
 import torch
-import uuid
 from scipy import misc
 import numpy as np
-from PIL import Image
 import sys
 
 
@@ -21,6 +22,7 @@ def read(file):
     elif file.endswith('.pfm'): return readPFM(file)[0]
     else: raise Exception('don\'t know how to read %s' % file)
 
+
 def write(file, data):
     if file.endswith('.float3'): return writeFloat(file, data)
     elif file.endswith('.flo'): return writeFlow(file, data)
@@ -30,6 +32,7 @@ def write(file, data):
     elif file.endswith('.jpg'): return writeImage(file, data)
     elif file.endswith('.pfm'): return writePFM(file, data)
     else: raise Exception('don\'t know how to write %s' % file)
+
 
 def readPFM(file):
     with open(file, "rb") as file:
@@ -106,6 +109,7 @@ def writePFM(file, image, scale=1):
 
     image.tofile(file)
 
+
 def readFlow(name):
     if name.endswith('.pfm') or name.endswith('.PFM'):
         return readPFM(name)[0][:,:,0:2]
@@ -122,6 +126,7 @@ def readFlow(name):
     flow = np.fromfile(f, np.float32, width * height * 2).reshape((height, width, 2))
 
     return flow.astype(np.float32)
+
 
 def readImage(name):
     if name.endswith('.pfm') or name.endswith('.PFM'):
@@ -140,12 +145,14 @@ def writeImage(name, data):
 
     return misc.imsave(name, data)
 
+
 def writeFlow(name, flow):
     f = open(name, 'wb')
     f.write('PIEH'.encode('utf-8'))
     np.array([flow.shape[1], flow.shape[0]], dtype=np.int32).tofile(f)
     flow = flow.astype(np.float32)
     flow.tofile(f)
+
 
 def readFloat(name):
     f = open(name, 'rb')
@@ -170,6 +177,7 @@ def readFloat(name):
         data = np.transpose(data, (1, 0, 2))
 
     return data
+
 
 def writeFloat(name, data):
     f = open(name, 'wb')

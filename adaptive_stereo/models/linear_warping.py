@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file linear_warping.py
-# @author Milo Knowles
-# @date 2020-03-16 16:44:21 (Mon)
-
 import torch
 import torch.nn as tnn
 import torch.nn.functional as F

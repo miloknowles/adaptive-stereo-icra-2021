@@ -1,11 +1,8 @@
-# Adapted from: https://github.com/meteorshowers/StereoNet-ActiveStereoNet/blob/e2abce4e855767afd23f066626920cfd4d67799b/models/StereoNet_single.py
-
 import numpy as np
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.backends.cudnn as cudnn
 
 
 def convbn(in_channels, out_channels, kernel_size, stride, pad, dilation):
@@ -139,7 +136,10 @@ class DisparityRegression(nn.Module):
 
 class StereoNet(nn.Module):
   def __init__(self, k, r, input_scale, maxdisp=192):
-    """
+    """The StereoNet architecture.
+
+    Adapted from: https://github.com/meteorshowers/StereoNet-ActiveStereoNet/blob/e2abce4e855767afd23f066626920cfd4d67799b/models/StereoNet_single.py
+
     k (int) : The downsampling factor for the cost volume. The spatial dimensions of the cost volume
               will be w / 2^k and h / 2^k.
     r (int) : The number of residual refinement stages.

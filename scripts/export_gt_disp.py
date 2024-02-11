@@ -6,9 +6,7 @@
 
 import os, glob
 
-import argparse
 import numpy as np
-import PIL.Image as pil
 
 from collections import Counter
 

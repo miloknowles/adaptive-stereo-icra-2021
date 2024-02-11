@@ -1,9 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file ae_ood_analysis.py
-# @author Milo Knowles
-# @date 2020-10-09 17:33:00 (Fri)
-
 import os, argparse, math, random
 
 import torch
@@ -19,7 +13,7 @@ import scipy.stats as stats
 from models.stereo_net import FeatureExtractorNetwork
 from models.autoencoder import ConvolutionalDecoder
 from datasets.stereo_dataset import StereoDataset
-from utils.path_utils import *
+import utils.path_utils as paths
 from utils.loss_functions import SSIM
 from utils.visualization import *
 
@@ -365,33 +359,33 @@ if __name__ == "__main__":
                                 drop_last=False, num_workers=4) for d in train_datasets]
     novel_loaders = [DataLoader(d, opt.batch_size, shuffle=True, pin_memory=True,
                                 drop_last=False, num_workers=4) for d in novel_datasets]
-    save_data(train_loaders, novel_loaders, path_to_output(reldir="ae_ood_{}".format(opt.environment)),
+    save_data(train_loaders, novel_loaders, output_folder(reldir="ae_ood_{}".format(opt.environment)),
               opt, num_train=1000, num_novel=1000)
 
   if opt.mode == "histogram":
-    loss_train_path = path_to_output(reldir="ae_ood_{}/train_loss.pt".format(opt.environment))
-    loss_novel_path = path_to_output(reldir="ae_ood_{}/novel_loss.pt".format(opt.environment))
+    loss_train_path = output_folder(reldir="ae_ood_{}/train_loss.pt".format(opt.environment))
+    loss_novel_path = output_folder(reldir="ae_ood_{}/novel_loss.pt".format(opt.environment))
 
     loss_train = torch.load(loss_train_path)
     loss_novel = torch.load(loss_novel_path)
 
     plot_histogram(
-        loss_train, loss_novel, path_to_output(reldir="ae_ood_{}".format(opt.environment)),
+        loss_train, loss_novel, output_folder(reldir="ae_ood_{}".format(opt.environment)),
         opt, percentile=opt.percentile, show=False, legend=(opt.environment == "vk_to_sf"))
 
   if opt.mode == "pr":
-    loss_train_path = path_to_output(reldir="ae_ood_{}/train_loss.pt".format(opt.environment))
-    loss_novel_path = path_to_output(reldir="ae_ood_{}/novel_loss.pt".format(opt.environment))
+    loss_train_path = output_folder(reldir="ae_ood_{}/train_loss.pt".format(opt.environment))
+    loss_novel_path = output_folder(reldir="ae_ood_{}/novel_loss.pt".format(opt.environment))
     loss_train = torch.load(loss_train_path)
     loss_novel = torch.load(loss_novel_path)
     plot_precision_recall(
-        loss_train, loss_novel, path_to_output(reldir="ood_{}".format(opt.environment)),
+        loss_train, loss_novel, output_folder(reldir="ood_{}".format(opt.environment)),
         opt, show=False)
 
   # NOTE: Need to run this script for each of the environments below in --pr mode first.
   # This will save the "precision.pt" and "recall.pt" data that is needed.
   if opt.mode == "pr_multiple":
-    output_folder = path_to_output(reldir="ae_ood_multiple")
+    output_folder = output_folder(reldir="ae_ood_multiple")
     os.makedirs(output_folder, exist_ok=True)
 
     short_names = ["vk_to_sf", "sf_to_kitti", "vk_to_kitti", "vk_weather"]
@@ -400,7 +394,7 @@ if __name__ == "__main__":
 
     pr_dict = {}
     for i, (short_name, legend_name, color) in enumerate(zip(short_names, legend_names, colors)):
-      input_folder = path_to_output(reldir="ae_ood_{}".format(short_name))
+      input_folder = output_folder(reldir="ae_ood_{}".format(short_name))
       precision = torch.load(os.path.join(input_folder, "precision.pt")).numpy()
       recall = torch.load(os.path.join(input_folder, "recall.pt")).numpy()
       pr_dict[legend_name] = (precision, recall, color)

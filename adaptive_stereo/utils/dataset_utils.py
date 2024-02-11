@@ -1,10 +1,3 @@
-# Copyright 2020 Massachusetts Institute of Technology
-#
-# @file dataset_utils.py
-# @author Milo Knowles
-# @date 2020-05-19 17:55:52 (Tue)
-
-import os
 import imageio
 import numpy as np
 import cv2 as cv

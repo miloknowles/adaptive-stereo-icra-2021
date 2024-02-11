@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torch = "*"
+torchvision = "*"
+imageio = "*"
+scipy = "*"
+matplotlib = "*"
+tensorboardx = "*"
+git-python = "*"
+opencv-python = "*"
+pandas = "*"
+
+[dev-packages]
+black = "*"
+seaborn = "*"
+
+[requires]
+python_version = "3.11"

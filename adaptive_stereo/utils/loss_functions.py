@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def khamis_robust_loss(pred_disp, gt_disp):
+def khamis_robust_loss(pred_disp: torch.Tensor, gt_disp: torch.Tensor):
   """
   The two-parameter robust loss function used in StereoNet (Khamis et al., 2018).
 
@@ -28,7 +28,10 @@ def khamis_robust_loss_multiscale(inputs, outputs, scales=[0], gt_disp_scale=0):
   losses["total_loss"] = 0
 
   for scale in scales:
-    loss_this_scale = khamis_robust_loss(outputs["pred_disp_l/{}".format(scale)], inputs["gt_disp_l/{}".format(gt_disp_scale)])
+    loss_this_scale = khamis_robust_loss(
+      outputs["pred_disp_l/{}".format(scale)],
+      inputs["gt_disp_l/{}".format(gt_disp_scale)]
+    )
     losses["khamis_robust_loss/{}".format(scale)] = loss_this_scale
     losses["total_loss"] += loss_this_scale
 
@@ -140,8 +143,10 @@ def monodepth_leftright_loss(left_img, right_img, outputs, warper, scale):
   Monodepth photometric loss with left-right consistency.
   From: https://github.com/nianticlabs/monodepth2
 
+  ```
   Loss = 0.85*SSIM + 0.15*L1 + 0.001*Smoothness + 0.001*Consistency
-
+  ```
+  
   NOTE(milo): In Monodepth, they train with multiscale loss, but I found that after multiscale
   supervised pretraining, using Mondepth loss at only the highest resolution for fine-tuning
   works well.
